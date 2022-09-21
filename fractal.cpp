@@ -56,7 +56,7 @@ void resize(int width, int height) {}
 GLdouble k;
 void display() {
   glViewport(0, 0, 800, 800);
-  k = 50;
+  k = 70;
   GLdouble x = -20, y = 20;
   drawGraphMinkovskogo(x, y);
 
@@ -67,14 +67,50 @@ void drawGraphMinkovskogo(GLdouble x, GLdouble y) {
   // for (int i = 0; i < 5; i++)
   glColor3d(1, 1, 1);
 
-  for (int i = 0; i < 1; i++) {
+  // glColor3d(1, 0.5, 0);
+  drawHorizontalLines(x, y);
+  drawVerticalLines(x + k, y);
+
+  glColor3d(0.3, 0.77, 0.32);
+  k *= -1;
+  drawHorizontalLines(x, y);
+  k *= -1;
+  drawVerticalLines(x - k, y);
+
+  glColor3d(0.35, 0.17, 0.48);
+  drawHorizontalLines(x, y);
+  // drawVerticalLines(x - k, y);
+
+  glColor3d(1, 1, 0);
+  // drawHorizontalLines(x, y);
+  // drawVerticalLines(x + k, y);
+
+  // drawHorizontalLines(x, y);
+  // drawVerticalLines(x + k, y);
+
+  for (int i = 0; i < 2; i++) {
+    k *= pow(-1, i);
+    y *= pow(-1, i);
+    /*
     drawHorizontalLines(x, y);
 
     drawVerticalLines(x + k, y);
-    drawHorizontalLines(x + k, y + k);
+    */
+    // разделение нахуй
+    // drawHorizontalLines(x + k, y + k);
 
-    drawVerticalLines(x + 2 * k, y - k);
-    drawVerticalLines(x + 2 * k, y);
+    // drawVerticalLines(x + 2 * k, y - k);
+    // drawVerticalLines(x + 2 * k, y);
+
+    /*
+        drawVerticalLines(x + k, y);
+        drawHorizontalLines(x + k, y + k);
+
+        drawVerticalLines(x + 2 * k, y - k);
+        drawVerticalLines(x + 2 * k, y);
+
+      */
+
     // drawHorizontalLines(x + 2 * k, y - k);
 
     // drawVerticalLines(x + 3 * k, y - k);
