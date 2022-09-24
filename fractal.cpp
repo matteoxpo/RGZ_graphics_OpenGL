@@ -3,19 +3,22 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <cmath>
 
 void init();
 void resize(int width, int height);
 void display();
-void drawGraphMinkovskogo(GLdouble x, GLdouble y);
-void drawHorizontalLines(GLdouble x, GLdouble y);
-void drawVerticalLines(GLdouble x, GLdouble y);
-void drawLine(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2);
+void drawTree(double x, double y, double angle, double l);
+void drawLeaf();
+double createXCoordinate(double bias, double coefficient, double angle);
+void drawLine(double x1, double y1, double x2, double y2);
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
+
+int recursionStopCounter = 0;
 
 int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
@@ -28,6 +31,7 @@ int main(int argc, char *argv[]) {
 
   glColor3d(1, 1, 0);
 
+  srand(time(NULL));
   glutDisplayFunc(display);
   glutMainLoop();
 
@@ -53,98 +57,63 @@ void init() {
 
 void resize(int width, int height) {}
 
-GLdouble k;
 void display() {
-  glViewport(0, 0, 800, 800);
-  k = 70;
-  GLdouble x = -20, y = 20;
-  drawGraphMinkovskogo(x, y);
-
+  glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+  drawTree(0, -100, M_PI / 2, WINDOW_HEIGHT / 8);
   glFlush();
 }
 
-void drawGraphMinkovskogo(GLdouble x, GLdouble y) {
-  // for (int i = 0; i < 5; i++)
-  glColor3d(1, 1, 1);
+void drawTree(double x, double y, double angle, double length) {
+  double p;
+  double x1, y1;
+  double s, new_angle, i;
 
-  // glColor3d(1, 0.5, 0);
-  drawHorizontalLines(x, y);
-  drawVerticalLines(x + k, y);
+  recursionStopCounter++;
+  if (recursionStopCounter >= 25000) return;
+  if (length > 8) {
+    x1 = ceil(x + length * cos(angle));
+    y1 = ceil(y + length * sin(angle));
+    if (length > 150) {
+      p = 100;
+    } else {
+      p = length;
+    }
+    if (p < 30) {
+      if (rand() % 10 > 5) {
+        glColor3d(0.5, 1, 0);
+      } else {
+        glColor3d(0.19, 0.4, 0);
+      }
 
-  glColor3d(0.3, 0.77, 0.32);
-  k *= -1;
-  drawHorizontalLines(x, y);
-  k *= -1;
-  drawVerticalLines(x - k, y);
+      for (i = 0; i <= 3; i++) {
+        drawLine(x + i, y, x1, y1);
+      }
 
-  glColor3d(0.35, 0.17, 0.48);
-  drawHorizontalLines(x, y);
-  // drawVerticalLines(x - k, y);
+    } else {
+      glColor3d(0.5, 0.2, 0.1);
+      for (i = 0; i <= (floor(p / 6)); i++) {
+        drawLine(x + i - floor(p / 12), y, x1, y1);
+      }
+    }
+    int recursionDown = (9 - ceil(rand() % 5));
 
-  glColor3d(1, 1, 0);
-  // drawHorizontalLines(x, y);
-  // drawVerticalLines(x + k, y);
-
-  // drawHorizontalLines(x, y);
-  // drawVerticalLines(x + k, y);
-
-  for (int i = 0; i < 2; i++) {
-    k *= pow(-1, i);
-    y *= pow(-1, i);
-    /*
-    drawHorizontalLines(x, y);
-
-    drawVerticalLines(x + k, y);
-    */
-    // разделение нахуй
-    // drawHorizontalLines(x + k, y + k);
-
-    // drawVerticalLines(x + 2 * k, y - k);
-    // drawVerticalLines(x + 2 * k, y);
-
-    /*
-        drawVerticalLines(x + k, y);
-        drawHorizontalLines(x + k, y + k);
-
-        drawVerticalLines(x + 2 * k, y - k);
-        drawVerticalLines(x + 2 * k, y);
-
-      */
-
-    // drawHorizontalLines(x + 2 * k, y - k);
-
-    // drawVerticalLines(x + 3 * k, y - k);
-
-    // drawHorizontalLines(x + 3 * k, y);
-
-    // drawHorizontalLines(x + 4 * k, y);
+    for (i = 0; i < recursionDown; i++) {
+      s = (rand() % (int)(length - ceil(length / 6)) + ceil(length / 6));
+      new_angle = angle + 0.1 * (5 - rand() % 10);
+      x1 = ceil(x + s * cos(angle));
+      y1 = ceil(y + s * sin(angle));
+      drawTree(x1, y1, new_angle, p - 5 - rand() % 30);
+    }
   }
 }
 
-void drawHorizontalLines(GLdouble x, GLdouble y) {
-  drawLine(x, y, x + k / 4, y);
-  drawLine(x + k / 4, y + k / 4, x + k / 4 + k / 4, y + k / 4);
-  drawLine(x + k / 4 + k / 4, y - k / 4, x + k - k / 4, y - k / 4);
-  drawLine(x + k - k / 4, y, x + k, y);
-  drawLine(x + k / 4, y, x + k / 4, y + k / 4);
-  drawLine(x + k / 4 + k / 4, y + k / 4, x + k / 4 + k / 4, y - k / 4);
-  drawLine(x + k - k / 4, y - k / 4, x + k - k / 4, y);
+double createXCoordinate(double bias, double coefficient, double angle) {
+  return ceil(bias + coefficient * cos(angle));
 }
 
-void drawVerticalLines(GLdouble x, GLdouble y) {
-  drawLine(x, y, x, y + k / 4);
-  drawLine(x, y + k / 4, x - k / 4, y + k / 4);
-  drawLine(x - k / 4, y + k / 4, x - k / 4, y + k / 4 + k / 4);
-  drawLine(x - k / 4, y + k / 4 + k / 4, x + k / 4, y + k / 4 + k / 4);
-  drawLine(x + k / 4, y + k / 4 + k / 4, x + k / 4, y + k - k / 4);
-  drawLine(x + k / 4, y + k - k / 4, x, y + k - k / 4);
-  drawLine(x, y + k - k / 4, x, y + k);
-}
-
-void drawLine(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2) {
-  glViewport(0, 0, 800, 800);
+void drawLine(double x1, double y1, double x2, double y2) {
   glBegin(GL_LINES);
-  {  // рисуем линии
+  {
     glVertex2d(x1, y1);
     glVertex2d(x2, y2);
   }
