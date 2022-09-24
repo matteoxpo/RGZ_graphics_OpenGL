@@ -10,26 +10,32 @@
 void init();
 void resize(int width, int height);
 void display();
+
 void drawTree(double x, double y, double angle, double l);
-void drawLeaf();
-double createXCoordinate(double bias, double coefficient, double angle);
+void drawLeaf(double x, double y, double x1, double y1);
+void drawTrunk(double x, double y, double x1, double y1, double p);
 void drawLine(double x1, double y1, double x2, double y2);
+
+double createXCoordinate(double bias, double coefficient, double angle);
+double createYCoordinate(double bias, double coefficient, double angle);
+double createAngle(double angle);
+double createLenghtFactor(double length);
+int createNumOfBranches();
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
-
-int recursionStopCounter = 0;
+int RECURS_STOP_COUNTER = 0;
+const int MIN_LENGTH = WINDOW_WIDTH / 100;
+const int MAX_LENGTH = WINDOW_WIDTH / 5;
 
 int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowPosition(50, 10);
-  glutInitWindowSize(800, 800);
+  glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
   glutCreateWindow("RGZ");
   glutReshapeFunc(resize);
   init();
-
-  glColor3d(1, 1, 0);
 
   srand(time(NULL));
   glutDisplayFunc(display);
@@ -59,56 +65,56 @@ void resize(int width, int height) {}
 
 void display() {
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-  drawTree(0, -100, M_PI / 2, WINDOW_HEIGHT / 8);
+  drawTree(0, -WINDOW_HEIGHT / 8, M_PI / 2, WINDOW_HEIGHT / 8);
   glFlush();
 }
 
 void drawTree(double x, double y, double angle, double length) {
-  double p;
+  double new_length;
   double x1, y1;
   double s, new_angle, i;
 
-  recursionStopCounter++;
-  if (recursionStopCounter >= 25000) return;
-  if (length > 8) {
-    x1 = ceil(x + length * cos(angle));
-    y1 = ceil(y + length * sin(angle));
-    if (length > 150) {
-      p = 100;
-    } else {
-      p = length;
-    }
-    if (p < 30) {
-      if (rand() % 10 > 5) {
-        glColor3d(0.5, 1, 0);
-      } else {
-        glColor3d(0.19, 0.4, 0);
-      }
+  RECURS_STOP_COUNTER++;
+  if (RECURS_STOP_COUNTER >= 25000) return;
 
-      for (i = 0; i <= 3; i++) {
-        drawLine(x + i, y, x1, y1);
-      }
+  if (length > MIN_LENGTH) {
+    x1 = createXCoordinate(x, length, angle);
+    y1 = createYCoordinate(y, length, angle);
+    s = createLenghtFactor(length);
 
-    } else {
-      glColor3d(0.5, 0.2, 0.1);
-      for (i = 0; i <= (floor(p / 6)); i++) {
-        drawLine(x + i - floor(p / 12), y, x1, y1);
-      }
-    }
-    int recursionDown = (9 - ceil(rand() % 5));
+    if (length > MAX_LENGTH) length = WINDOW_HEIGHT / 8;
 
-    for (i = 0; i < recursionDown; i++) {
-      s = (rand() % (int)(length - ceil(length / 6)) + ceil(length / 6));
-      new_angle = angle + 0.1 * (5 - rand() % 10);
-      x1 = ceil(x + s * cos(angle));
-      y1 = ceil(y + s * sin(angle));
-      drawTree(x1, y1, new_angle, p - 5 - rand() % 30);
+    if (length < 40)
+      drawLeaf(x, y, x1, y1);
+    else
+      drawTrunk(x, y, x1, y1, length);
+
+    for (i = 0; i < createNumOfBranches(); i++) {
+      new_angle = createAngle(angle);
+      x1 = createXCoordinate(x, s, angle);
+      y1 = createYCoordinate(y, s, angle);
+      drawTree(x1, y1, new_angle, length - 5 - rand() % 30);
     }
   }
 }
 
-double createXCoordinate(double bias, double coefficient, double angle) {
-  return ceil(bias + coefficient * cos(angle));
+void drawLeaf(double x, double y, double x1, double y1) {
+  if (rand() % 10 > 5) {
+    glColor3d(0.5, 1, 0);
+  } else {
+    glColor3d(0.19, 0.4, 0);
+  }
+
+  for (double i = 0; i <= 3; i++) {
+    drawLine(x + i, y, x1, y1);
+  }
+}
+
+void drawTrunk(double x, double y, double x1, double y1, double p) {
+  glColor3d(0.5, 0.2, 0.1);
+  for (double i = 0; i <= (floor(p / 6)); i++) {
+    drawLine(x + i - floor(p / 12), y, x1, y1);
+  }
 }
 
 void drawLine(double x1, double y1, double x2, double y2) {
@@ -118,4 +124,20 @@ void drawLine(double x1, double y1, double x2, double y2) {
     glVertex2d(x2, y2);
   }
   glEnd();
+}
+
+double createXCoordinate(double bias, double coefficient, double angle) {
+  return ceil(bias + coefficient * cos(angle));
+}
+
+double createYCoordinate(double bias, double coefficient, double angle) {
+  return ceil(bias + coefficient * sin(angle));
+}
+
+int createNumOfBranches() { return (9 - ceil(rand() % 5)); }
+
+double createAngle(double angle) { return angle + 0.1 * (5 - rand() % 10); }
+
+double createLenghtFactor(double length) {
+  return (rand() % (int)(length - ceil(length / 6)) + ceil(length / 6));
 }
