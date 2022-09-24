@@ -21,8 +21,8 @@ double createAngle(double angle);
 double createLenghtFactor(double length);
 int createNumOfBranches();
 
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 800;
+const int WINDOW_WIDTH = 1000;
+const int WINDOW_HEIGHT = 1000;
 const int MIN_LENGTH = WINDOW_HEIGHT / 100;
 const int MAX_LENGTH = WINDOW_HEIGHT / 5;
 
@@ -32,7 +32,7 @@ const int RECURS_COUNTER_LIMIT = 30000;
 int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowPosition(100, 100);
+  glutInitWindowPosition(WINDOW_HEIGHT / 2, 0);
   glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
   glutCreateWindow("RGZ");
   glutReshapeFunc(resize);
@@ -66,7 +66,12 @@ void resize(int width, int height) {}
 
 void display() {
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-  drawTree(0, -WINDOW_HEIGHT / 8, M_PI / 2, WINDOW_HEIGHT / 8);
+  drawTree(0, -WINDOW_WIDTH / 4, M_PI / 2, WINDOW_WIDTH / 8);
+  RECURS_COUNTER = 0;
+  drawTree(WINDOW_WIDTH / 4.5, -WINDOW_WIDTH / 4, M_PI / 2, WINDOW_WIDTH / 10);
+  RECURS_COUNTER = 0;
+  drawTree(-WINDOW_WIDTH / 4.5, -WINDOW_WIDTH / 4, M_PI / 2, WINDOW_WIDTH / 12);
+
   glFlush();
 }
 
