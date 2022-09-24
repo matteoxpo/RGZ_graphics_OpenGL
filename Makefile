@@ -5,8 +5,8 @@ CFLAGS = -c
 GLFLAGS = -lglut -lGL -lGLU
 
 BUILD_PATH = ./build/
-SOURCES =  fractal.cpp
-OBJECTS = $(SOURCES:.cpp=.o)
+SOURCES =  fractal.c
+OBJECTS = $(SOURCES:.c=.o)
 
 EXECUTABLE = MAIN
 
@@ -17,7 +17,7 @@ all: $(OBJECTS)
 
 rebuild: clean all
 
-%.o: %.cpp
+%.o: %.c
 	$(CC) $(CFLAGS) $< -o $(BUILD_PATH)$@
 
 clean:
