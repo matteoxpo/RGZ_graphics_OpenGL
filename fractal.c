@@ -2,6 +2,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <math.h>
+#include <string.h>
 #include <time.h>
 
 /*
@@ -25,7 +26,7 @@ void drawTree(double x, double y, double angle, double length);
 void drawLeaf(double x, double y, double x1, double y1);
 void drawTrunk(double x, double y, double x1, double y1, double p);
 void drawLine(double x1, double y1, double x2, double y2);
-
+void drawString(double x, double y, char* string);
 /*
 Вспомогательные функции, вынесенные отдельно,
 чтобы сделать код более читабельным
@@ -45,7 +46,7 @@ const int WINDOW_HEIGHT = 1000;
 const int MIN_LENGTH = WINDOW_HEIGHT / 80;
 const int MAX_LENGTH = WINDOW_HEIGHT / 5;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowPosition(WINDOW_HEIGHT / 2, 0);
@@ -82,9 +83,15 @@ void resize(int width, int height) {}
 
 void display() {
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+  char myNSG[] = "Khromin Sergey AVT-113";
+  drawString(0, -WINDOW_HEIGHT / 4, myNSG);
   drawTree(0, 0, M_PI / 2, WINDOW_WIDTH / 9);
-  drawTree(WINDOW_WIDTH / 4, -WINDOW_WIDTH / 2, M_PI / 2, WINDOW_WIDTH / 9);
-  drawTree(-WINDOW_WIDTH / 4, -WINDOW_WIDTH / 2, M_PI / 2, WINDOW_WIDTH / 10);
+  /*
+  Расскомменировать для отрисовки еще 2 деревьев
+  */
+  // drawTree(WINDOW_WIDTH / 4, -WINDOW_WIDTH / 2, M_PI / 2, WINDOW_WIDTH / 9);
+  // drawTree(-WINDOW_WIDTH / 4, -WINDOW_WIDTH / 2, M_PI / 2, WINDOW_WIDTH /
+  // 10);
 
   glFlush();
 }
@@ -138,6 +145,13 @@ void drawLine(double x1, double y1, double x2, double y2) {
     glVertex2d(x2, y2);
   }
   glEnd();
+}
+
+void drawString(double x, double y, char* string) {
+  glRasterPos2d(x - strlen(string) * 5, y);
+  for (char* c = string; *c != '\0'; c++) {
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+  }
 }
 
 double createXCoordinate(double bias, double coefficient, double angle) {
