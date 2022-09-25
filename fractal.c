@@ -2,8 +2,6 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 void init();
