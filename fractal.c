@@ -42,11 +42,8 @@ int createNumOfBranches();
 
 const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 1000;
-const int MIN_LENGTH = WINDOW_HEIGHT / 100;
+const int MIN_LENGTH = WINDOW_HEIGHT / 80;
 const int MAX_LENGTH = WINDOW_HEIGHT / 5;
-
-int RECURS_COUNTER = 0;
-const int RECURS_COUNTER_LIMIT = 30000;
 
 int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
@@ -85,19 +82,15 @@ void resize(int width, int height) {}
 
 void display() {
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-  drawTree(0, -WINDOW_WIDTH / 4, M_PI / 2, WINDOW_WIDTH / 8);
-  RECURS_COUNTER = 0;
-  drawTree(WINDOW_WIDTH / 4.5, -WINDOW_WIDTH / 4, M_PI / 2, WINDOW_WIDTH / 10);
-  RECURS_COUNTER = 0;
-  drawTree(-WINDOW_WIDTH / 4.5, -WINDOW_WIDTH / 4, M_PI / 2, WINDOW_WIDTH / 12);
+  drawTree(0, 0, M_PI / 2, WINDOW_WIDTH / 9);
+  drawTree(WINDOW_WIDTH / 4, -WINDOW_WIDTH / 2, M_PI / 2, WINDOW_WIDTH / 9);
+  drawTree(-WINDOW_WIDTH / 4, -WINDOW_WIDTH / 2, M_PI / 2, WINDOW_WIDTH / 10);
 
   glFlush();
 }
 
 void drawTree(double x, double y, double angle, double length) {
-  RECURS_COUNTER++;
-
-  if (length > MIN_LENGTH && RECURS_COUNTER < RECURS_COUNTER_LIMIT) {
+  if (length > MIN_LENGTH) {
     double x1 = createXCoordinate(x, length, angle);
     double y1 = createYCoordinate(y, length, angle);
     double length_factor = createLenghtFactor(length);
@@ -105,7 +98,7 @@ void drawTree(double x, double y, double angle, double length) {
 
     if (length > MAX_LENGTH) length = WINDOW_HEIGHT / 8;
 
-    if (length < WINDOW_HEIGHT / 20)
+    if (length < WINDOW_HEIGHT / 25)
       drawLeaf(x, y, x1, y1);
     else
       drawTrunk(x, y, x1, y1, length);
@@ -155,9 +148,9 @@ double createYCoordinate(double bias, double coefficient, double angle) {
   return ceil(bias + coefficient * sin(angle));
 }
 
-int createNumOfBranches() { return (9 - ceil(rand() % 5)); }
+int createNumOfBranches() { return (8 - ceil(rand() % 5)); }
 
-double createAngle(double angle) { return angle + 0.1 * (5 - rand() % 10); }
+double createAngle(double angle) { return angle + 0.15 * (5 - rand() % 10); }
 
 double createLenghtFactor(double length) {
   return (rand() % (int)(length - ceil(length / 6)) + ceil(length / 6));
