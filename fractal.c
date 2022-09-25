@@ -4,20 +4,41 @@
 #include <math.h>
 #include <time.h>
 
+/*
+Набор функций, для инициализации и отрисовки графики
+*/
+
 void init();
 void resize(int width, int height);
 void display();
 
+/*
+Блок функций, отрисовывающих дерево
+Отрисовка деомпозирована на составляющие:
+Дерево  -----> Стволы ---> Ветки
+          \
+           -----> Лист -----> Светло-зеленая часть листа
+                            \
+                             -----> Темно-зеленая часть листа
+*/
 void drawTree(double x, double y, double angle, double l);
 void drawLeaf(double x, double y, double x1, double y1);
 void drawTrunk(double x, double y, double x1, double y1, double p);
 void drawLine(double x1, double y1, double x2, double y2);
 
+/*
+Вспомогательные функции, вынесенные отдельно,
+чтобы сделать код более читабельным
+*/
 double createXCoordinate(double bias, double coefficient, double angle);
 double createYCoordinate(double bias, double coefficient, double angle);
 double createAngle(double angle);
 double createLenghtFactor(double length);
 int createNumOfBranches();
+
+/*
+Глобальные переменные
+*/
 
 const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 1000;
