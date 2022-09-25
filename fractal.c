@@ -21,7 +21,7 @@ void display();
                             \
                              -----> Темно-зеленая часть листа
 */
-void drawTree(double x, double y, double angle, double l);
+void drawTree(double x, double y, double angle, double length);
 void drawLeaf(double x, double y, double x1, double y1);
 void drawTrunk(double x, double y, double x1, double y1, double p);
 void drawLine(double x1, double y1, double x2, double y2);
