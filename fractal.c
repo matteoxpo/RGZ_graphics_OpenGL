@@ -15,7 +15,7 @@ void display();
 
 /*
 Блок функций, отрисовывающих дерево
-Отрисовка деомпозирована на составляющие:
+Отрисовка декомпозирована на составляющие:
 Дерево  -----> Стволы ---> Ветки
           \
            -----> Лист -----> Светло-зеленая часть листа
@@ -101,7 +101,7 @@ void drawTree(double x, double y, double angle, double length) {
     double x1 = createXCoordinate(x, length, angle);
     double y1 = createYCoordinate(y, length, angle);
     double length_factor = createLenghtFactor(length);
-    double new_angle = 0;
+    double new_angle = createAngle(angle);
 
     if (length > MAX_LENGTH) length = WINDOW_HEIGHT / 8;
 
@@ -111,7 +111,6 @@ void drawTree(double x, double y, double angle, double length) {
       drawTrunk(x, y, x1, y1, length);
 
     for (int i = 0; i < createNumOfBranches(); i++) {
-      new_angle = createAngle(angle);
       x1 = createXCoordinate(x, length_factor, angle);
       y1 = createYCoordinate(y, length_factor, angle);
       drawTree(x1, y1, new_angle, length - 5 - rand() % 30);
